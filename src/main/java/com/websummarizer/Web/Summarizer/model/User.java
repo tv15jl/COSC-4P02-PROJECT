@@ -26,13 +26,16 @@ public class User {
     private String last_name;
 
     @Column(name = "email" , unique = true)
-    String email;
+    private String email;
 
     @Column(name = "password")
-    String password;
+    private String password;
 
     @Column(name = "phone_number")
-    String phone_number;
+    private String phone_number;
+
+    @Column(name = "role")
+    private String role;
 
 
 
