@@ -8,8 +8,7 @@ import lombok.*;
  */
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,25 +19,22 @@ public class User {
     @Column(name="uid")
     private long id;
 
-    @Setter
     @Column(name = "first_name")
     private String first_name;
 
-    @Setter
     @Column(name = "last_name")
     private String last_name;
 
-    @Setter
     @Column(name = "email" , unique = true)
     String email;
 
-    @Setter
     @Column(name = "password")
     String password;
 
-    @Setter
     @Column(name = "phone_number")
     String phone_number;
+
+
 
     @Override
     public String toString() {
