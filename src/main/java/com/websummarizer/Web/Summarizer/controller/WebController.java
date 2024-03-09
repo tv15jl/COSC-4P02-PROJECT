@@ -59,9 +59,9 @@ public class WebController {
      *
      * @return The name of the view to render.
      */
-    @GetMapping("/signin")
+    @PostMapping("/signin")
     public String signIn() {
-        return "index";
+        return "user";
     }
 
     /**
