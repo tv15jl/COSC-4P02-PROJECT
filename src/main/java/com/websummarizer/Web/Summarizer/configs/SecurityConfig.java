@@ -9,56 +9,42 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+
 
 //import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-//
-//    @Bean
-//    protected UserDetailsService getUserDetailsService(){
-//        return new CustomUserService();
-//    }
-//    @Bean
-//    public BCryptPasswordEncoder getPasswordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    }
-//
-//    @Bean
-//    public DaoAuthenticationProvider getDaoAuthProvider(){
-//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-//        daoAuthenticationProvider.setUserDetailsService(getUserDetailsService());
-//        daoAuthenticationProvider.setPasswordEncoder(getPasswordEncoder());
-//        return daoAuthenticationProvider;
-//    }
-//
-////
-//    @Bean
-//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http
-//                .authorizeHttpRequests(auth -> {
-//                    auth.requestMatchers("/**").permitAll(); // Allow all requests
-//                })
-//                .oauth2Login(withDefaults())
-//                .logout((logout) -> {
-//                    logout.logoutUrl("/logout");
-//                    logout.logoutSuccessUrl("/");
-//                })
-//                .build();
-//    }
+    @Bean
+    protected UserDetailsService getUserDetailsService(){
+        return new CustomUserService();
+    }
+    @Bean
+    public BCryptPasswordEncoder getPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider getDaoAuthProvider(){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(getUserDetailsService());
+        daoAuthenticationProvider.setPasswordEncoder(getPasswordEncoder());
+        return daoAuthenticationProvider;
+    }
+
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .authorizeHttpRequests(auth->{
-                    //permit all users at the home page
-                    auth.requestMatchers("/").permitAll();
-
-                    //permit only authorized users on other pages
-                    auth.anyRequest().authenticated();
+                .authorizeHttpRequests(auth -> {
+                    //currently we are permitting all user to access all pages, later we will change it
+                    auth.requestMatchers("/**").permitAll();
                 })
                 .oauth2Login(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
 }
