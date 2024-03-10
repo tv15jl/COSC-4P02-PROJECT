@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URL;
@@ -46,8 +49,6 @@ public class WebController {
 
     /**
      * Endpoint for user registration.
-     *
-     * @return The name of the view to render.
      */
     @PostMapping("/register")
     public void register() {
@@ -57,7 +58,6 @@ public class WebController {
     /**
      * Endpoint for user sign in.
      *
-     * @return The name of the view to render.
      */
     @PostMapping("/login")
     public void login() {
@@ -126,25 +126,23 @@ public class WebController {
      * Endpoint for creating a user.
      *
      * @param user    The user to create.
-     * @param session The current session.
-     * @return The name of the view to render.
      */
     @PostMapping("/createUser")
-    public void createUser(@ModelAttribute User user, HttpSession session) {
-        session.setAttribute("msg", "");
+    public String createUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
         logger.info("Received user creation request: " + user);
         boolean bool = false;
         try {
             bool = userService.createUser(user) != null;
         } catch (Exception e) {
-            session.setAttribute("msg", "Email already exists");
             logger.warning("User creation failed: " + e.getMessage());
         }
         if (bool) {
-            session.setAttribute("msg", "Registered Successfully");
             logger.info("User created successfully: " + user);
+            redirectAttributes.addFlashAttribute("success", "User Created Successfully");
+            return "redirect:/login";
         }
-        //return "redirect:/";
+        redirectAttributes.addFlashAttribute("error", "Registration failed.");
+        return "redirect:/register";
     }
 
     /**
